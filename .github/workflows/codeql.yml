@@ -5,6 +5,7 @@ on:
     - cron: '0 0 * * *'
   push:
     branches: [ main, release-*, releasing-* ]
+  workflow_dispatch:
 
 env:
   BASE_BRANCH: origin/main
@@ -12,11 +13,15 @@ env:
 
 jobs:
   trigger-mode:
-    runs-on: ubuntu-latest
+    runs-on: 
+      - nscloud-ubuntu-22.04-amd64-4x16-with-cache
+      - nscloud-cache-size-10gb
+      - nscloud-cache-tag-kubeblocks
+      - nscloud-exp-runner-tool-cache-10gb
     outputs:
       trigger-mode: ${{ steps.get_trigger_mode.outputs.trigger_mode }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: namespacelabs/nscloud-checkout-action@v0
         with:
           fetch-depth: 0
       - name: Get trigger mode
@@ -39,7 +44,11 @@ jobs:
     name: Analyze
     needs: trigger-mode
     if: contains(needs.trigger-mode.outputs.trigger-mode, '[go]')
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    runs-on: 
+      - nscloud-ubuntu-22.04-amd64-4x16-with-cache
+      - nscloud-cache-size-10gb
+      - nscloud-cache-tag-kubeblocks
+      - nscloud-exp-runner-tool-cache-10gb
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
       actions: read
@@ -62,6 +71,14 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "${{ env.GO_VERSION }}"
+          cache: false
+
+      - name: Setup Golang caches
+        uses: namespacelabs/nscloud-cache-action@v1
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
 
       - name: make generate
         run: |
