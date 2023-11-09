@@ -18,6 +18,7 @@ jobs:
       - nscloud-cache-size-10gb
       - nscloud-cache-tag-kubeblocks
       - nscloud-exp-runner-tool-cache-10gb
+      - nscloud-git-mirror-5gb
     outputs:
       trigger-mode: ${{ steps.get_trigger_mode.outputs.trigger_mode }}
     steps:
