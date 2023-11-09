@@ -68,6 +68,8 @@ jobs:
             libbtrfs-dev \
             libdevmapper-dev
 
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
