@@ -77,7 +77,7 @@ jobs:
           cache: false
 
       - name: Setup Golang caches
-        uses: namespacelabs/nscloud-cache-action@v1
+        uses: namespacelabs/nscloud-cache-action@f904e1753ad371ff935c52a65c4a2a8394cab62b
         with:
           path: |
             ~/.cache/go-build
